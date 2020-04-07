@@ -1,7 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using TCPCommunicator;
 
 public class SynchronousSocketClient
 {
@@ -24,16 +27,16 @@ public class SynchronousSocketClient
             // Connect the socket to the remote endpoint. Catch any errors.  
             try
             {
-                sender.Connect("192.168.0.7", 25565);
+                sender.Connect("192.168.55.101", 25565);
 
                 Console.WriteLine("Socket connected to {0}",
                     sender.RemoteEndPoint.ToString());
                 while (true) 
                 {
-                    byte[] msg = Encoding.ASCII.GetBytes(Console.ReadLine() + "<EOF>");
-
+                    var msg = new Message(Console.ReadLine());
                     // Send the data through the socket.  
-                    int bytesSent = sender.Send(msg);
+                    int bytesSent = sender.Send(msg.Serialize());
+                    //int bytesSent = sender.Send(msg);
                 }
                 // Encode the data string into a byte array.  
                 

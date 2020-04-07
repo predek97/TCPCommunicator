@@ -3,11 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "LearnIpAddress\Client.csproj", "{D744235B-0E29-41D7-AB77-0469566DA615}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "LearnIpAddress\Client.csproj", "{D744235B-0E29-41D7-AB77-0469566DA615}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{0540A968-D045-46ED-8E60-1988C29C5C17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csproj", "{0540A968-D045-46ED-8E60-1988C29C5C17}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Common", "Common\Common.shproj", "{294E563B-15E2-4345-8846-54F6A1CA3C76}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Common\Common.projitems*{0540a968-d045-46ed-8e60-1988c29c5c17}*SharedItemsImports = 5
+		Common\Common.projitems*{294e563b-15e2-4345-8846-54f6a1ca3c76}*SharedItemsImports = 13
+		Common\Common.projitems*{d744235b-0e29-41d7-ab77-0469566da615}*SharedItemsImports = 5
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

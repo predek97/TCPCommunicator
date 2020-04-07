@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using TCPCommunicator;
 
 public class SynchronousSocketListener
 {
@@ -45,18 +46,11 @@ public class SynchronousSocketListener
                     data = null;
                     Console.WriteLine("Text received : {0}", data);
                     // An incoming connection needs to be processed.  
-                    while (true)
-                    {
-                        int bytesRec = handler.Receive(bytes);
-                        data += Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                        if (data.IndexOf("<EOF>") > -1)
-                        {
-                            break;
-                        }
-                    }
-
+                    var ns = new NetworkStream(handler);
+                    var msg = new Message(ns);
                     // Show the data on the console.  
-                    Console.WriteLine("Text received : {0}", data);
+                    Console.WriteLine("Text received : {0}", msg.Text);
+
                 }
                 handler.Shutdown(SocketShutdown.Both);
                 handler.Close();
