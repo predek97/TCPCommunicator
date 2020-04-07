@@ -43,8 +43,6 @@ public class SynchronousSocketListener
                 Console.WriteLine("Connected IP: {0}", handler.LocalEndPoint);
                 while(handler.Connected)
                 {
-                    data = null;
-                    Console.WriteLine("Text received : {0}", data);
                     // An incoming connection needs to be processed.  
                     var ns = new NetworkStream(handler);
                     var msg = new Message(ns);
