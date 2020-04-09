@@ -27,7 +27,7 @@ public class SynchronousSocketClient
             // Connect the socket to the remote endpoint. Catch any errors.  
             try
             {
-                sender.Connect("192.168.55.101", 25565);
+                sender.Connect("192.168.55.107", 25565);
 
                 Console.WriteLine("Socket connected to {0}",
                     sender.RemoteEndPoint.ToString());
