@@ -4,46 +4,41 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Threading;
 using TCPCommunicator;
 
 public class SynchronousSocketClient
 {
+    
 
-    public static void StartClient()
+    public static int Main(String[] args)
     {
-        // Data buffer for incoming data.  
-        byte[] bytes = new byte[1024];
+        var c = new TCPClient();
+        c.Connect();
+        return 0;
+    }
+}
+
+public class TCPClient
+{
+    private ManualResetEvent ClientConnected = new ManualResetEvent(false);
+    private readonly IPEndPoint ServerEndpoint;
+    public TCPClient(string serverAddress = "192.168.55.107", string serverPort = "25565")
+    {
+        ServerEndpoint = IPEndPoint.Parse($"{serverAddress}:{serverPort}");     
+    }
+    public void Connect()
+    {
 
         // Connect to a remote device.  
         try
         {
-            // Establish the remote endpoint for the socket.  
-            // This example uses port 11000 on the local computer.  
-            //IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            
-            // Create a TCP/IP  socket.  
-            Socket sender = new Socket(SocketType.Stream, ProtocolType.Tcp);
-
             // Connect the socket to the remote endpoint. Catch any errors.  
             try
             {
-                sender.Connect("192.168.55.107", 25565);
-
-                Console.WriteLine("Socket connected to {0}",
-                    sender.RemoteEndPoint.ToString());
-                while (true) 
-                {
-                    var msg = new Message(Console.ReadLine());
-                    // Send the data through the socket.  
-                    int bytesSent = sender.Send(msg.Serialize());
-                    //int bytesSent = sender.Send(msg);
-                }
-                // Encode the data string into a byte array.  
-                
-
-                // Release the socket.  
-                sender.Shutdown(SocketShutdown.Both);
-                sender.Close();
+                var sender = new Socket(SocketType.Stream, ProtocolType.Tcp);
+                sender.BeginConnect(ServerEndpoint, ConnectionCallback, sender);
+                ClientConnected.WaitOne();
 
             }
             catch (ArgumentNullException ane)
@@ -66,9 +61,24 @@ public class SynchronousSocketClient
         }
     }
 
-    public static int Main(String[] args)
+    public void ConnectionCallback(IAsyncResult ar)
     {
-        StartClient();
-        return 0;
+        Socket connection = (Socket)ar.AsyncState;
+        connection.EndConnect(ar);
+        Console.WriteLine("Socket connected to {0}", connection.RemoteEndPoint.ToString());
+        var ns = new NetworkStream(connection);
+        while (connection.Connected)
+        {
+            var msg = new Message(Console.ReadLine());
+            // Send the data through the socket.  
+            connection.Send(msg.Serialize());
+            while (ns.DataAvailable) 
+            {
+                msg = new Message(ns);
+                Console.WriteLine("Text received from server : {0}", msg.Text);
+            }
+            
+        }
+        ClientConnected.Set();
     }
 }
